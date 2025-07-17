@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Attendance System - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: #f7f8fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      width: 400px;
+      background: white;
+      padding: 40px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .login-box img {
+      width: 60px;
+      margin-bottom: 20px;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .login-box select,
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .login-box button:hover {
+      background-color: #45a049;
+    }
+    .login-box p {
+      margin-top: 10px;
+    }
+    .login-box a {
+      color: #2196F3;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Logo">
+    <h2>Login Panel</h2>
+
+    <select id="userType">
+      <option value="student">Student</option>
+      <option value="faculty">Faculty</option>
+      <option value="admin">Administrator</option>
+    </select>
+
+    <input type="email" placeholder="Enter Email Address" id="email" required>
+    <input type="password" placeholder="Enter Password" id="password" required>
+
+    <button onclick="login()">Login</button>
+
+    <p>
+      Don't have an account? <a href="register.html">Register here</a>
+    </p>
+  </div>
+
+  <script>
+    function login() {
+      const userType = document.getElementById('userType').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      const userData = JSON.parse(localStorage.getItem(email));
+
+      if (!userData) {
+        alert("User not found. Please register first.");
+        return;
+      }
+
+      if (userData.password === password && userData.userType === userType) {
+        // Redirect based on user type
+        if (userType === 'student') {
+          window.location.href = "student-dashboard.html";
+        } else if (userType === 'faculty') {
+          window.location.href = "faculty-dashboard.html";
+        } else if (userType === 'admin') {
+          window.location.href = "admin-dashboard.html";
+        }
+      } else {
+        alert("Invalid credentials or wrong user type.");
+      }
+    }
+  </script>
+</body>
+</html>
