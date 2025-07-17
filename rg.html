@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Student Attendance System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f7f8fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .register-box {
+      width: 400px;
+      background: white;
+      padding: 40px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .register-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .register-box select,
+    .register-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .register-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #2196F3;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .register-box button:hover {
+      background-color: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>Register</h2>
+
+    <select id="userType">
+      <option value="student">Student</option>
+      <option value="faculty">Faculty</option>
+      <option value="admin">Administrator</option>
+    </select>
+
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="password" id="password" placeholder="Password" required>
+
+    <button onclick="register()">Register</button>
+
+    <p style="margin-top: 10px;">
+      Already have an account? <a href="index.html">Login here</a>
+    </p>
+  </div>
+
+  <script>
+    function register() {
+      const userType = document.getElementById('userType').value;
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // 🔒 Normally you would save this data to a database. 
+      // For demo, we save to localStorage
+      const user = {
+        name,
+        email,
+        password,
+        userType
+      };
+      localStorage.setItem(email, JSON.stringify(user));
+      alert("Registration successful! Now you can login.");
+      window.location.href = "index.html"; // back to login
+    }
+  </script>
+</body>
+</html>
