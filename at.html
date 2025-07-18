@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Attendance System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #1e293b;
+      color: white;
+      padding: 30px 20px;
+      height: 100vh;
+      position: fixed;
+    }
+    .sidebar h2 {
+      font-size: 22px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: #334155;
+      border-radius: 6px;
+    }
+    .sidebar ul li.active, .sidebar ul li:hover {
+      background: #2563eb;
+    }
+
+    /* Main */
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+      width: 100%;
+    }
+
+    .form-container, .table-container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #16a34a;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #15803d;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    table th {
+      background-color: #2563eb;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>🎓 GD Panel</h2>
+    <ul>
+      <li class="active">📋 Attendance</li>
+      <li>👥 Students</li>
+      <li>⚙️ Settings</li>
+    </ul>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Attendance Form -->
+    <div class="form-container">
+      <h2>Enter Attendance</h2>
+
+      <label for="rollNumber">Roll Number</label>
+      <input type="text" id="rollNumber" onkeyup="fetchDetails()">
+
+      <label for="studentName">Student Name</label>
+      <input type="text" id="studentName" readonly>
+
+      <label for="subject">Subject</label>
+      <select id="subject">
+        <option value="">Select Subject</option>
+        <option>Maths</option>
+        <option>Science</option>
+        <option>English</option>
+        <option>Computer</option>
+      </select>
+
+      <label for="attendance">Attendance</label>
+      <select id="attendance">
+        <option>Present</option>
+        <option>Absent</option>
+      </select>
+
+      <button onclick="saveAttendance()">✅ Save Attendance</button>
+
+      <p id="result"></p>
+    </div>
+
+    <!-- Attendance Table -->
+    <div class="table-container">
+      <h2>Today's Attendance</h2>
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be injected here -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    const students = {
+      "23165C04069": "Yash Yadav",
+      "23165C04011": "Arpit Chauhan",
+      "23165C04004": "Aaditya Naik"
+    };
+
+    function fetchDetails() {
+      const roll = document.getElementById("rollNumber").value.trim();
+      const name = students[roll] || "";
+      document.getElementById("studentName").value = name;
+    }
+
+    function saveAttendance() {
+      const roll = document.getElementById("rollNumber").value.trim();
+      const name = document.getElementById("studentName").value.trim();
+      const subject = document.getElementById("subject").value;
+      const status = document.getElementById("attendance").value;
+      const result = document.getElementById("result");
+      const date = new Date().toLocaleDateString();
+
+      if (!roll || !name || !subject) {
+        result.className = "error";
+        result.textContent = "❗ Please fill all required fields.";
+        return;
+      }
+
+      // Add to local storage (simulate database)
+      const newEntry = { roll, name, subject, status, date };
+      const data = JSON.parse(localStorage.getItem("attendanceData") || "[]");
+      data.push(newEntry);
+      localStorage.setItem("attendanceData", JSON.stringify(data));
+
+      result.className = "success";
+      result.textContent = `✅ Attendance saved for ${name} (${roll})`;
+
+      // Clear form
+      document.getElementById("rollNumber").value = "";
+      document.getElementById("studentName").value = "";
+      document.getElementById("subject").value = "";
+      document.getElementById("attendance").value = "Present";
+
+      loadAttendance(); // Update table
+    }
+
+    function loadAttendance() {
+      const data = JSON.parse(localStorage.getItem("attendanceData") || "[]");
+      const tbody = document.querySelector("#attendanceTable tbody");
+      tbody.innerHTML = ""; // Clear table
+
+      data.reverse().forEach(entry => {
+        const row = `<tr>
+          <td>${entry.roll}</td>
+          <td>${entry.name}</td>
+          <td>${entry.subject}</td>
+          <td style="color:${entry.status === 'Present' ? 'green' : 'red'};">${entry.status}</td>
+          <td>${entry.date}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // Load on page load
+    window.onload = loadAttendance;
+  </script>
+
+</body>
+</html>
