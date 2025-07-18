@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Panel - Attendance System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 220px; background: #2c3e50; color: #fff; padding: 20px 10px;
+    }
+    .sidebar h2 { font-size: 22px; margin-bottom: 20px; }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar ul li {
+      padding: 10px 15px; cursor: pointer;
+      border-radius: 5px; transition: 0.2s;
+    }
+    .sidebar ul li:hover { background: #34495e; }
+
+    .main {
+      flex: 1; padding: 20px;
+      background: #f4f4f4;
+    }
+
+    .login-section, .profile-section, .admin-panel {
+      background: #fff; padding: 20px;
+      border-radius: 10px; margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .profile-section, .admin-panel { display: none; }
+
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input, select {
+      padding: 8px; width: 100%;
+      margin-top: 5px; border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .student-card {
+      margin-top: 20px;
+    }
+
+    .student-card p {
+      margin: 8px 0;
+    }
+
+    button {
+      background: #27ae60; color: white;
+      padding: 10px 20px; margin-top: 15px;
+      border: none; border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .admin-form input, .admin-form select { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Student Panel</h2>
+    <ul>
+      <li onclick="showSection('login')">Login</li>
+      <li onclick="showSection('profile')">Student Profile</li>
+      <li onclick="showSection('admin')">Admin Panel</li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <!-- Login Section -->
+    <div class="login-section" id="login-section">
+      <h2>Login with Enrollment Number</h2>
+      <input type="text" id="enrollInput" placeholder="Enter Enrollment Number">
+      <button onclick="loginStudent()">Login</button>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-section" id="profile-section">
+      <h2>Student Profile</h2>
+      <div class="student-card" id="studentInfo">
+        <!-- Student Data Will Load Here -->
+      </div>
+    </div>
+
+    <!-- Admin Panel Section -->
+    <div class="admin-panel" id="admin-section">
+      <h2>Add Student (Admin Panel)</h2>
+      <div class="admin-form">
+        <input type="text" id="newEnroll" placeholder="Enrollment Number">
+        <input type="text" id="newName" placeholder="Full Name">
+        <input type="text" id="newSemester" placeholder="Semester">
+        <input type="text" id="newFees" placeholder="Fees Paid / Pending">
+        <input type="text" id="newAttendance" placeholder="Attendance %">
+        <input type="text" id="newActivity" placeholder="Recent Activities">
+        <button onclick="addStudent()">Add Student</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const students = {
+      "23165C04069": {
+        name: "Yash Yadav",
+        semester: "6th",
+        fees: "Paid",
+        attendance: "92%",
+        activity: "Project Submitted, Hackathon Registered"
+      },
+      "23165C04011": {
+        name: "Arpit Chauhan",
+        semester: "5th",
+        fees: "Pending",
+        attendance: "84%",
+        activity: "Sports Event, Seminar"
+      },
+      "23165C04068": {
+        name: "Aaditya Naik",
+        semester: "6th",
+        fees: "Paid",
+        attendance: "96%",
+        activity: "Final Year Project, Workshop"
+      }
+    };
+
+    function loginStudent() {
+      const enroll = document.getElementById("enrollInput").value.trim();
+      const student = students[enroll];
+      const profile = document.getElementById("profile-section");
+      const info = document.getElementById("studentInfo");
+
+      if (student) {
+        info.innerHTML = `
+          <p><strong>Name:</strong> ${student.name}</p>
+          <p><strong>Enrollment No:</strong> ${enroll}</p>
+          <p><strong>Semester:</strong> ${student.semester}</p>
+          <p><strong>Fees:</strong> ${student.fees}</p>
+          <p><strong>Attendance:</strong> ${student.attendance}</p>
+          <p><strong>Activity:</strong> ${student.activity}</p>
+        `;
+        profile.style.display = 'block';
+        showSection('profile');
+      } else {
+        alert("Student not found!");
+      }
+    }
+
+    function addStudent() {
+      const e = document.getElementById("newEnroll").value.trim();
+      students[e] = {
+        name: document.getElementById("newName").value.trim(),
+        semester: document.getElementById("newSemester").value.trim(),
+        fees: document.getElementById("newFees").value.trim(),
+        attendance: document.getElementById("newAttendance").value.trim(),
+        activity: document.getElementById("newActivity").value.trim()
+      };
+      alert("Student Added Successfully!");
+    }
+
+    function showSection(section) {
+      document.getElementById("login-section").style.display = section === 'login' ? 'block' : 'none';
+      document.getElementById("profile-section").style.display = section === 'profile' ? 'block' : 'none';
+      document.getElementById("admin-section").style.display = section === 'admin' ? 'block' : 'none';
+    }
+
+    // Default to login section
+    showSection('login');
+  </script>
+</body>
+</html>
