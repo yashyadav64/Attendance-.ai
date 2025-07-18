@@ -11,46 +11,59 @@
     }
     body {
       margin: 0;
-      padding: 0;
       background: #f3f4f6;
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
       min-height: 100vh;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 240px;
       background: #1e293b;
       color: white;
       padding: 30px 20px;
       height: 100vh;
-      position: fixed;
+      position: sticky;
+      top: 0;
+      flex-shrink: 0;
     }
+
     .sidebar h2 {
       font-size: 22px;
       margin-bottom: 30px;
       text-align: center;
     }
+
     .sidebar ul {
       list-style: none;
       padding: 0;
     }
+
     .sidebar ul li {
       padding: 12px 15px;
       margin-bottom: 10px;
       cursor: pointer;
       background: #334155;
       border-radius: 6px;
+      transition: 0.3s;
     }
-    .sidebar ul li.active, .sidebar ul li:hover {
+
+    .sidebar ul li.active,
+    .sidebar ul li:hover {
       background: #2563eb;
     }
 
-    /* Main */
     .main {
-      margin-left: 240px;
-      padding: 30px;
-      width: 100%;
+      flex: 1;
+      padding: 20px;
     }
 
     .form-container, .table-container {
@@ -59,10 +72,6 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       margin-bottom: 30px;
-    }
-
-    h2 {
-      margin-bottom: 20px;
     }
 
     label {
@@ -83,7 +92,7 @@
       margin-top: 20px;
       padding: 12px;
       width: 100%;
-      background-color: #16a34a;
+      background-color: #2563eb;
       color: white;
       font-weight: bold;
       border: none;
@@ -92,10 +101,10 @@
     }
 
     button:hover {
-      background-color: #15803d;
+      background-color: #1e40af;
     }
 
-    #result {
+    #result, #studentResult {
       margin-top: 15px;
       font-weight: bold;
     }
@@ -124,85 +133,103 @@
       background-color: #2563eb;
       color: white;
     }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .main {
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>🎓 GD Panel</h2>
-    <ul>
-      <li class="active">📋 Attendance</li>
-      <li>👥 Students</li>
-      <li>⚙️ Settings</li>
-    </ul>
-  </div>
-
-  <!-- Main -->
-  <div class="main">
-
-    <!-- Attendance Form -->
-    <div class="form-container">
-      <h2>Enter Attendance</h2>
-
-      <label for="rollNumber">Roll Number</label>
-      <input type="text" id="rollNumber" onkeyup="fetchDetails()">
-
-      <label for="studentName">Student Name</label>
-      <input type="text" id="studentName" readonly>
-
-      <label for="subject">Subject</label>
-      <select id="subject">
-        <option value="">Select Subject</option>
-        <option>Maths</option>
-        <option>Science</option>
-        <option>English</option>
-        <option>Computer</option>
-      </select>
-
-      <label for="attendance">Attendance</label>
-      <select id="attendance">
-        <option>Present</option>
-        <option>Absent</option>
-      </select>
-
-      <button onclick="saveAttendance()">✅ Save Attendance</button>
-
-      <p id="result"></p>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>🎓 GD Panel</h2>
+      <ul>
+        <li onclick="scrollToPanel('addStudent')">➕ Add Student</li>
+        <li onclick="scrollToPanel('attendancePanel')">📋 Attendance</li>
+      </ul>
     </div>
 
-    <!-- Attendance Table -->
-    <div class="table-container">
-      <h2>Today's Attendance</h2>
-      <table id="attendanceTable">
-        <thead>
-          <tr>
-            <th>Roll No</th>
-            <th>Name</th>
-            <th>Subject</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Data will be injected here -->
-        </tbody>
-      </table>
-    </div>
+    <!-- Main -->
+    <div class="main">
+      <!-- Add Student Form -->
+      <div class="form-container" id="addStudent">
+        <h2>Add New Student</h2>
+        <label for="newRoll">Roll Number</label>
+        <input type="text" id="newRoll" placeholder="e.g., 23165C04070">
+        <label for="newName">Full Name</label>
+        <input type="text" id="newName" placeholder="Enter Full Name">
+        <button onclick="addStudent()">📥 Add Student</button>
+        <p id="studentResult"></p>
+      </div>
 
+      <!-- Attendance Panel -->
+      <div class="form-container" id="attendancePanel">
+        <h2>Enter Attendance</h2>
+        <label for="rollNumber">Roll Number</label>
+        <input type="text" id="rollNumber" onkeyup="fetchDetails()">
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" readonly>
+        <label for="subject">Subject</label>
+        <select id="subject">
+          <option value="">Select Subject</option>
+          <option>Maths</option>
+          <option>Science</option>
+          <option>English</option>
+          <option>Computer</option>
+        </select>
+        <label for="attendance">Attendance</label>
+        <select id="attendance">
+          <option>Present</option>
+          <option>Absent</option>
+        </select>
+        <button onclick="saveAttendance()">✅ Save Attendance</button>
+        <p id="result"></p>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="table-container">
+        <h2>Today's Attendance</h2>
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Subject</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
-    const students = {
-      "23165C04069": "Yash Yadav",
-      "23165C04011": "Arpit Chauhan",
-      "23165C04004": "Aaditya Naik"
-    };
+    function getStudents() {
+      return JSON.parse(localStorage.getItem("students") || "{}");
+    }
+
+    function setStudents(students) {
+      localStorage.setItem("students", JSON.stringify(students));
+    }
 
     function fetchDetails() {
       const roll = document.getElementById("rollNumber").value.trim();
-      const name = students[roll] || "";
-      document.getElementById("studentName").value = name;
+      const students = getStudents();
+      document.getElementById("studentName").value = students[roll] || "";
     }
 
     function saveAttendance() {
@@ -219,7 +246,6 @@
         return;
       }
 
-      // Add to local storage (simulate database)
       const newEntry = { roll, name, subject, status, date };
       const data = JSON.parse(localStorage.getItem("attendanceData") || "[]");
       data.push(newEntry);
@@ -228,19 +254,46 @@
       result.className = "success";
       result.textContent = `✅ Attendance saved for ${name} (${roll})`;
 
-      // Clear form
       document.getElementById("rollNumber").value = "";
       document.getElementById("studentName").value = "";
       document.getElementById("subject").value = "";
       document.getElementById("attendance").value = "Present";
 
-      loadAttendance(); // Update table
+      loadAttendance();
+    }
+
+    function addStudent() {
+      const roll = document.getElementById("newRoll").value.trim();
+      const name = document.getElementById("newName").value.trim();
+      const result = document.getElementById("studentResult");
+
+      if (!roll || !name) {
+        result.className = "error";
+        result.textContent = "❗ Please enter both Roll Number and Name.";
+        return;
+      }
+
+      const students = getStudents();
+      if (students[roll]) {
+        result.className = "error";
+        result.textContent = "❗ Student with this roll number already exists.";
+        return;
+      }
+
+      students[roll] = name;
+      setStudents(students);
+
+      result.className = "success";
+      result.textContent = `✅ Student ${name} added successfully!`;
+
+      document.getElementById("newRoll").value = "";
+      document.getElementById("newName").value = "";
     }
 
     function loadAttendance() {
       const data = JSON.parse(localStorage.getItem("attendanceData") || "[]");
       const tbody = document.querySelector("#attendanceTable tbody");
-      tbody.innerHTML = ""; // Clear table
+      tbody.innerHTML = "";
 
       data.reverse().forEach(entry => {
         const row = `<tr>
@@ -254,9 +307,11 @@
       });
     }
 
-    // Load on page load
+    function scrollToPanel(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
     window.onload = loadAttendance;
   </script>
-
 </body>
 </html>
